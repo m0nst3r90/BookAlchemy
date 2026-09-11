@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ author.name }} | Book Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="detail-page">
+    <a class="back-link" href="{{ url_for('index') }}">← Zurück zur Bibliothek</a>
+
+    <div class="author-detail">
+        <div class="detail-content">
+            <span class="detail-eyebrow">Autor</span>
+            <h1>{{ author.name }}</h1>
+
+            <div class="detail-meta">
+                <div class="detail-meta-item">
+                    <span>Geburtsdatum</span>
+                    <strong>{{ author.birth_date.strftime('%d.%m.%Y') }}</strong>
+                </div>
+
+                <div class="detail-meta-item">
+                    <span>Todesdatum</span>
+                    <strong>
+                        {% if author.date_of_death %}
+                            {{ author.date_of_death.strftime('%d.%m.%Y') }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </strong>
+                </div>
+            </div>
+
+            <h2 class="section-title">Bücher</h2>
+
+            {% if author.books %}
+                <div class="author-books">
+                    {% for book in author.books %}
+                        <a class="author-book-card" href="{{ url_for('book_detail', book_id=book.id) }}">
+                            <div>
+                                <strong>{{ book.title }}</strong>
+                                <span>{{ book.publication_year }}</span>
+                            </div>
+                            <span class="book-arrow">→</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="empty-text">Keine Bücher vorhanden.</p>
+            {% endif %}
+
+            <div class="detail-actions">
+                <form method="POST" action="{{ url_for('delete_author', author_id=author.id) }}">
+                    <button class="delete-button" type="submit" onclick="return confirm('Autor und alle Bücher wirklich löschen?')">Autor löschen</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Book</title>
+</head>
+<body>
+<form method="POST" action="{{ url_for('add_book') }}">
+    <div>
+        <label for="book_title">Title:</label>
+        <input type="text" id="book_title" name="book_title" required>
+    </div>
+    <div>
+        <label for="book_isbn">ISBN:</label>
+        <input type="text" id="book_isbn" name="book_isbn" required>
+    </div>
+    <div>
+        <label for="book_publication_year">Publication Year:</label>
+        <input type="text" id="book_publication_year" name="book_publication_year">
+    </div>
+    <div>
+        <select id="book_author_id" name="book_author_id" required>
+            <option value="">Bitte auswählen</option>
+            {% for author in authors %}
+            <option value="{{ author.id }}">
+                {{ author.name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit">Add Book</button>
+</form>
+</body>
+</html>

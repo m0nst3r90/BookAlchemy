@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="page-container">
+    <header class="library-header">
+        <div class="header-content">
+            <div>
+                <span class="eyebrow">Deine Sammlung</span>
+                <h1>📚 Book Library</h1>
+                <p>Bücher entdecken, verwalten und organisieren.</p>
+            </div>
+
+            <form class="search-form" method="GET" action="{{ url_for('index') }}">
+                <input type="text" name="search" placeholder="Buchtitel suchen..."
+                       value="{{ request.args.get('search', '') }}">
+                <button class="search-button" type="submit">Suchen</button>
+            </form>
+        </div>
+    </header>
+    {% with messages = get_flashed_messages(category_filter=["success", "error"]) %}
+    {% if messages %}
+    <div class="flash-container">
+        {% for message in messages %}
+        <div class="flash-message">✓ {{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    {% if ai_available %}
+    <a class="ai-button" href="{{ url_for('recommendation') }}">✨ KI-Empfehlung</a>
+    {% else %}
+    <div class="ai-unavailable">
+        KI-Empfehlungen sind nicht verfügbar, da kein Gemini API-Key konfiguriert ist.
+    </div>
+    {% endif %}
+    <div class="table-card">
+        <table>
+            <thead>
+            <tr>
+                <th>
+                    <a href="{{ url_for('index', sort='title', search=request.args.get('search', '')) }}">Titel</a>
+                </th>
+                <th>
+                    <a href="{{ url_for('index', sort='author', search=request.args.get('search', '')) }}">Autor</a>
+                </th>
+                <th>
+                    <a href="{{ url_for('index', sort='publication_year', search=request.args.get('search', '')) }}">Jahr</a>
+                </th>
+                <th>
+                    <a href="{{ url_for('index', sort='isbn', search=request.args.get('search', '')) }}">ISBN</a>
+                </th>
+                <th>Aktionen</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for book in books %}
+            <tr>
+                <td>
+                    <a class="book-title" href="{{ url_for('book_detail', book_id=book.id) }}">{{ book.title }}</a>
+                </td>
+                <td>
+                    <div class="author-cell">
+                        <a class="author-link" href="{{ url_for('author_detail', author_id=book.author.id) }}">{{
+                            book.author.name }}</a>
+                        <form method="POST" action="{{ url_for('delete_author', author_id=book.author.id) }}">
+                            <button class="text-delete-button" type="submit"
+                                    onclick="return confirm('Autor und alle Bücher wirklich löschen?')">Autor löschen
+                            </button>
+                        </form>
+                    </div>
+                </td>
+                <td><span class="year-badge">{{ book.publication_year }}</span></td>
+                <td class="isbn">{{ book.isbn }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('delete_book', book_id=book.id) }}">
+                        <button class="delete-button" type="submit" onclick="return confirm('Buch wirklich löschen?')">
+                            Löschen
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if not books %}
+        <div class="empty-state">
+            <div class="empty-icon">📖</div>
+            <h3>Keine Bücher gefunden</h3>
+            <p>Probier einen anderen Suchbegriff.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

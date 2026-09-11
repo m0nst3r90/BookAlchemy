@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Author</title>
+</head>
+<body>
+<form method="POST" action="{{ url_for('add_author') }}">
+    <div>
+        <label for="author_name">Name:</label>
+        <input type="text" id="author_name" name="author_name" required>
+    </div>
+    <div>
+        <label for="author_birth_date">Birth date:</label>
+        <input type="text" id="author_birth_date" name="author_birth_date" required>
+    </div>
+    <div>
+        <label for="author_date_of_death">Date of Death:</label>
+        <input type="text" id="author_date_of_death" name="author_date_of_death">
+    </div>
+    <button type="submit">Add Author</button>
+</form>
+</body>
+</html>

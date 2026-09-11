@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ book.title }} | Book Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="detail-page">
+    <a class="back-link" href="{{ url_for('index') }}">← Zurück zur Bibliothek</a>
+    {% with messages = get_flashed_messages(category_filter=["success", "error"]) %}
+    {% if messages %}
+    <div class="flash-container">
+        {% for message in messages %}
+        <div class="flash-message">✓ {{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    <div class="book-detail">
+        <div class="cover-section">
+            <img class="book-cover" src="https://covers.openlibrary.org/b/isbn/{{ book.isbn }}-L.jpg"
+                 alt="Cover von {{ book.title }}">
+        </div>
+        <div class="detail-content">
+            <span class="detail-eyebrow">Buchdetails</span>
+            <h1>{{ book.title }}</h1>
+            <a class="detail-author" href="{{ url_for('author_detail', author_id=book.author.id) }}">
+                {{ book.author.name }}
+            </a>
+            <div class="detail-meta">
+                <div class="detail-meta-item">
+                    <span>Erscheinungsjahr</span>
+                    <strong>{{ book.publication_year }}</strong>
+                </div>
+                <div class="detail-meta-item">
+                    <span>ISBN</span>
+                    <strong>{{ book.isbn }}</strong>
+                </div>
+            </div>
+
+            <div class="rating-section">
+                <h3>Bewertung</h3>
+
+                <form class="rating-form" method="POST" action="{{ url_for('rate_book', book_id=book.id) }}">
+                    <div class="rating-stars">
+                        {% for value in range(10, 0, -1) %}
+                        <input type="radio"
+                               id="rating-{{ value }}"
+                               name="rating"
+                               value="{{ value }}"
+                               {% if book.rating == value %}checked{% endif %}
+                               onchange="this.form.submit()">
+
+                        <label for="rating-{{ value }}" title="{{ value / 2 }} von 5 Sternen"></label>
+                        {% endfor %}
+                    </div>
+
+                    <span class="rating-text">
+            {% if book.rating %}
+                {{ book.rating / 2 }} / 5
+            {% else %}
+                Noch nicht bewertet
+            {% endif %}
+        </span>
+                </form>
+            </div>
+
+            {% with messages = get_flashed_messages(category_filter=["recommendation"]) %}
+            {% for message in messages %}
+            <div class="recommendation-box">
+                <div class="recommendation-header">
+                    <span class="recommendation-icon">✨</span>
+                    <span>KI-Empfehlung</span>
+                </div>
+                <p>{{ message }}</p>
+            </div>
+            {% endfor %}
+            {% endwith %}
+
+            <div class="detail-actions">
+                <form method="POST" action="{{ url_for('delete_book', book_id=book.id) }}">
+                    <button class="delete-button" type="submit" onclick="return confirm('Buch wirklich löschen?')">Buch
+                        löschen
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
