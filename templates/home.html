@@ -22,22 +22,25 @@
             </form>
         </div>
     </header>
-    {% with messages = get_flashed_messages(category_filter=["success", "error"]) %}
+    {% with messages = get_flashed_messages(with_categories=true, category_filter=["success", "error"]) %}
     {% if messages %}
     <div class="flash-container">
-        {% for message in messages %}
-        <div class="flash-message">✓ {{ message }}</div>
+        {% for category, message in messages %}
+        <div class="flash-message {{ category }}">{{ message }}</div>
         {% endfor %}
     </div>
     {% endif %}
     {% endwith %}
-    {% if ai_available %}
-    <a class="ai-button" href="{{ url_for('recommendation') }}">✨ KI-Empfehlung</a>
-    {% else %}
-    <div class="ai-unavailable">
-        KI-Empfehlungen sind nicht verfügbar, da kein Gemini API-Key konfiguriert ist.
+    <div class="library-actions">
+        <a class="primary-button" href="{{ url_for('add_book') }}">+ Buch hinzufügen</a>
+        <a class="secondary-button" href="{{ url_for('add_author') }}">+ Autor hinzufügen</a>
+
+        {% if ai_available %}
+        <a class="ai-button" href="{{ url_for('recommendation') }}">✨ KI-Empfehlung</a>
+        {% else %}
+        <span class="ai-unavailable">KI-Empfehlung nicht verfügbar</span>
+        {% endif %}
     </div>
-    {% endif %}
     <div class="table-card">
         <table>
             <thead>
