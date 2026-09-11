@@ -1,10 +1,12 @@
 import os
 import json
+from dotenv import load_dotenv
 from google import genai
 
+load_dotenv()
 
 def ai_available():
-    return bool(os.getenv("GEMINI_API_KEY"))
+	return bool(os.getenv("GEMINI_API_KEY"))
 
 
 def get_recommendation(books_json):
@@ -47,10 +49,7 @@ def get_recommendation(books_json):
 			contents=prompt
 		)
 
-		content = response.text
-		print("GEMINI:", repr(content))
-
-		content = content.strip()
+		content = response.text.strip()
 
 		if content.startswith("```json"):
 			content = content[7:]
@@ -65,22 +64,3 @@ def get_recommendation(books_json):
 	except Exception as error:
 		print("Gemini Fehler:", error)
 		return None
-
-def error_check(response):
-    try:
-        data = response.json()
-    except ValueError:
-        print("Antwort ist kein gültiges JSON.")
-        return None
-
-    if "choices" not in data:
-        print("API-Fehler:", data)
-        return None
-
-    content = data["choices"][0]["message"]["content"]
-
-    if not content:
-        print("API hat keinen Content geliefert.")
-        return None
-
-    return content
