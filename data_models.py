@@ -17,7 +17,7 @@ class Author(db.Model):
     books: Mapped[list["Book"]] = relationship(back_populates="author", cascade="all, delete-orphan")
 
     def __repr__(self):
-        return f"Author({self.id}, {self.name}, {self.birth_date}, {self.data_of_death})"
+        return f"Author({self.id}, {self.name}, {self.birth_date}, {self.date_of_death})"
 
     def __str__(self):
         return f"Name: {self.name}, Birth Date: {self.birth_date}"
