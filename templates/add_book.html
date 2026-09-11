@@ -1,34 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Add Book</title>
+    <title>Buch hinzufügen | Book Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-<form method="POST" action="{{ url_for('add_book') }}">
-    <div>
-        <label for="book_title">Title:</label>
-        <input type="text" id="book_title" name="book_title" required>
+<div class="form-page">
+    <a class="back-link" href="{{ url_for('index') }}">← Zurück zur Bibliothek</a>
+    {% with messages = get_flashed_messages(with_categories=true, category_filter=["success", "error"]) %}
+    {% if messages %}
+    <div class="flash-container">
+        {% for category, message in messages %}
+        <div class="flash-message {{ category }}">{{ message }}</div>
+        {% endfor %}
     </div>
-    <div>
-        <label for="book_isbn">ISBN:</label>
-        <input type="text" id="book_isbn" name="book_isbn" required>
+    {% endif %}
+    {% endwith %}
+    <div class="form-card">
+        <span class="detail-eyebrow">Neues Buch</span>
+        <h1>Buch hinzufügen</h1>
+        <p class="form-description">Füge ein neues Buch zu deiner Bibliothek hinzu.</p>
+        <form method="POST" action="{{ url_for('add_book') }}">
+            <div class="form-group">
+                <label for="book_title">Titel</label>
+                <input type="text" id="book_title" name="book_title" placeholder="z. B. 1984" required>
+            </div>
+            <div class="form-group">
+                <label for="book_isbn">ISBN</label>
+                <input type="text" id="book_isbn" name="book_isbn" placeholder="z. B. 9780451524935" required>
+            </div>
+            <div class="form-group">
+                <label for="book_publication_year">Erscheinungsjahr</label>
+                <input type="number" id="book_publication_year" name="book_publication_year"
+                       min="0" max="2100" placeholder="z. B. 1949">
+            </div>
+            <div class="form-group">
+                <label for="book_author_id">Autor</label>
+                <select id="book_author_id" name="book_author_id" required>
+                    <option value="">Autor auswählen</option>
+                    {% for author in authors %}
+                    <option value="{{ author.id }}">{{ author.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-actions">
+                <a class="secondary-button" href="{{ url_for('index') }}">Abbrechen</a>
+                <button class="primary-button" type="submit">Buch hinzufügen</button>
+            </div>
+        </form>
     </div>
-    <div>
-        <label for="book_publication_year">Publication Year:</label>
-        <input type="text" id="book_publication_year" name="book_publication_year">
-    </div>
-    <div>
-        <select id="book_author_id" name="book_author_id" required>
-            <option value="">Bitte auswählen</option>
-            {% for author in authors %}
-            <option value="{{ author.id }}">
-                {{ author.name }}
-            </option>
-            {% endfor %}
-        </select>
-    </div>
-    <button type="submit">Add Book</button>
-</form>
+</div>
 </body>
 </html>

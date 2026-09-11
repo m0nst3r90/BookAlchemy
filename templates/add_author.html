@@ -1,24 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Add Author</title>
+    <title>Autor hinzufügen | Book Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-<form method="POST" action="{{ url_for('add_author') }}">
-    <div>
-        <label for="author_name">Name:</label>
-        <input type="text" id="author_name" name="author_name" required>
+<div class="form-page">
+    <a class="back-link" href="{{ url_for('index') }}">← Zurück zur Bibliothek</a>
+    {% with messages = get_flashed_messages(with_categories=true, category_filter=["success", "error"]) %}
+    {% if messages %}
+    <div class="flash-container">
+        {% for category, message in messages %}
+        <div class="flash-message {{ category }}">{{ message }}</div>
+        {% endfor %}
     </div>
-    <div>
-        <label for="author_birth_date">Birth date:</label>
-        <input type="text" id="author_birth_date" name="author_birth_date" required>
+    {% endif %}
+    {% endwith %}
+    <div class="form-card">
+        <span class="detail-eyebrow">Neuer Autor</span>
+        <h1>Autor hinzufügen</h1>
+        <p class="form-description">Füge einen neuen Autor zu deiner Bibliothek hinzu.</p>
+        <form method="POST" action="{{ url_for('add_author') }}">
+            <div class="form-group">
+                <label for="author_name">Name</label>
+                <input type="text" id="author_name" name="author_name" placeholder="z. B. George Orwell" required>
+            </div>
+            <div class="form-group">
+                <label for="author_birth_date">Geburtsdatum</label>
+                <input type="date" id="author_birth_date" name="author_birth_date" required>
+            </div>
+            <div class="form-group">
+                <label for="author_date_of_death">Todesdatum</label>
+                <input type="date" id="author_date_of_death" name="author_date_of_death">
+                <small>Optional</small>
+            </div>
+            <div class="form-actions">
+                <a class="secondary-button" href="{{ url_for('index') }}">Abbrechen</a>
+                <button class="primary-button" type="submit">Autor hinzufügen</button>
+            </div>
+        </form>
     </div>
-    <div>
-        <label for="author_date_of_death">Date of Death:</label>
-        <input type="text" id="author_date_of_death" name="author_date_of_death">
-    </div>
-    <button type="submit">Add Author</button>
-</form>
+</div>
 </body>
 </html>

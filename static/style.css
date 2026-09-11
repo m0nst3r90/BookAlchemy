@@ -134,6 +134,18 @@ form {
     font-weight: 600;
 }
 
+.flash-message.success {
+    color: #166534;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+}
+
+.flash-message.error {
+    color: #991b1b;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+}
+
 .table-card {
     overflow: hidden;
     background: var(--surface);
@@ -669,4 +681,131 @@ tbody tr:last-child td {
     margin: 0;
     color: #4b5563;
     line-height: 1.6;
+}
+
+
+.form-page {
+    width: min(700px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 50px 0;
+}
+
+.form-card {
+    padding: 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    box-shadow: var(--shadow);
+}
+
+.form-card h1 {
+    margin: 0 0 8px;
+    font-size: 36px;
+    letter-spacing: -1px;
+}
+
+.form-description {
+    margin: 0 0 30px;
+    color: var(--text-soft);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 22px;
+}
+
+.form-group label {
+    font-weight: 700;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 13px 15px;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, .12);
+}
+
+.form-group small {
+    color: var(--text-soft);
+    font-size: 12px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.primary-button,
+.secondary-button {
+    padding: 11px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.primary-button {
+    color: white;
+    background: var(--primary);
+    border: none;
+    cursor: pointer;
+}
+
+.primary-button:hover {
+    background: var(--primary-dark);
+}
+
+.secondary-button {
+    color: var(--text-soft);
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+}
+
+.secondary-button:hover {
+    color: var(--text);
+}
+
+.library-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+}
+
+.ai-button {
+    padding: 11px 18px;
+    color: white;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.ai-button:hover {
+    transform: translateY(-1px);
+}
+
+.ai-unavailable {
+    padding: 11px 16px;
+    color: var(--text-soft);
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
 }
