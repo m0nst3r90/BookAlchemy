@@ -1,23 +1,23 @@
-import os
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash
 
 from data_models import db, Author, Book
-
-from Ai_handling import get_recommendation, ai_available
+from pathlib import Path
+from ai_handling import get_recommendation, ai_available
 from setup_data import setup_database
 from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
 
-basedir = os.path.abspath(os.path.dirname(__file__))
+basedir = Path(__file__).parent.resolve()
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'data/library.sqlite')}"
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{Path(basedir) / 'data/library.sqlite'}"
 app.config["SECRET_KEY"] = "secret"
 db.init_app(app)
 
 @app.route('/')
 def index():
+    """Render the home page and handle sorting and searching queries."""
     sort_by = request.args.get("sort", "title")
     search = request.args.get("search", "")
     query = db.select(Book)
@@ -46,8 +46,10 @@ def index():
     books = db.session.scalars(query).all()
     return render_template("home.html", books=books, ai_available=ai_available())
 
+
 @app.route('/add_book', methods=['GET', 'POST'])
 def add_book():
+    """Handle adding a book to the database."""
     if request.method == 'GET':
         authors = db.session.scalars(db.select(Author).order_by(Author.name)).all()
         return render_template("add_book.html", authors=authors)
@@ -75,8 +77,10 @@ def add_book():
     flash(f'Buch "{book_title}" wurde erfolgreich hinzugefügt.', "success")
     return redirect(url_for("index"))
 
+
 @app.route("/book/<int:book_id>")
 def book_detail(book_id):
+    """Render the book detail page."""
     book = db.session.get(Book, book_id)
 
     if book is None:
@@ -84,8 +88,10 @@ def book_detail(book_id):
 
     return render_template("detail_book.html", book=book)
 
+
 @app.route("/book/<int:book_id>/rate", methods=["POST"])
 def rate_book(book_id):
+    """Handle rating of a book."""
     book = db.session.get(Book, book_id)
 
     if book is None:
@@ -104,8 +110,10 @@ def rate_book(book_id):
 
     return redirect(url_for("book_detail", book_id=book.id))
 
+
 @app.route('/book/<int:book_id>/delete', methods=['POST'])
 def delete_book(book_id):
+    """Handle deleting a book."""
     book = db.session.query(Book).get(book_id)
     if book:
         author_id = book.author_id
@@ -127,8 +135,10 @@ def delete_book(book_id):
 
     return redirect(url_for("index"))
 
+
 @app.route('/add_author', methods=['GET', 'POST'])
 def add_author():
+    """Handle adding an author."""
     if request.method == 'GET':
         return render_template("add_author.html")
 
@@ -152,8 +162,10 @@ def add_author():
     flash(f'Autor "{author_name}" wurde erfolgreich hinzugefügt.', "success")
     return redirect(url_for("index"))
 
+
 @app.route("/author/<int:author_id>")
 def author_detail(author_id):
+    """Render the author detail page."""
     author = db.session.get(Author, author_id)
 
     if author is None:
@@ -164,8 +176,10 @@ def author_detail(author_id):
         author=author
     )
 
+
 @app.route("/author/<int:author_id>/delete", methods=["POST"])
 def delete_author(author_id):
+    """Handle deleting an author."""
     author = db.session.get(Author, author_id)
     if author is None:
         flash("Author nicht gefunden", "error")
@@ -178,8 +192,10 @@ def delete_author(author_id):
 
     return redirect(url_for("index"))
 
+
 @app.route('/recommendation', methods=['GET'])
 def recommendation():
+    """Fetch an AI book recommendation and redirect to the recommended book's detail page."""
     if not ai_available():
         flash("Kein Gemini API-Key vorhanden. KI-Buchempfehlungen sind daher nicht verfügbar.", "error")
         return redirect(url_for("index"))
@@ -208,9 +224,10 @@ def recommendation():
     flash(recommendation_text, "recommendation")
     return redirect(url_for("book_detail", book_id=book.id))
 
-def get_books():
-    books = db.session.scalars(db.select(Book)).all()
 
+def get_books():
+    """Returns a list of all books."""
+    books = db.session.scalars(db.select(Book)).all()
     data = []
 
     for book in books:
